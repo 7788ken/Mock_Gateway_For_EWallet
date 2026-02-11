@@ -1,16 +1,53 @@
 # Mock Gateway
 
-本目录是独立的本地开发 Mock 网关仓库，用于模拟 eWallet 依赖的外部接口，避免在主业务仓库中引入临时绕过逻辑。
+本项目是 **独立 Git 仓库** 的本地 Mock 网关，用于模拟 eWallet 后端依赖的 Bally/EDIP 接口，避免在 `Backend` 主代码中持续保留绕过逻辑。
 
-## 目标
+## 已内置的 Mock 接口
 
-- 本地联调时模拟外部依赖接口（如 EDIP token、Bally validate）。
-- 不影响主仓库 `Backend` / `Frontend` 的分支与自动部署。
-- 通过环境变量切换是否启用 mock。
+- `POST /edip/v1/token/get`
+- `POST /edip/v1/token/refresh`
+- `POST /ewl/bal/v1/cardpin/validate`
+- `POST /ewl/edip/v1/member/profile`
+- `POST /ewl/bal/v1/player/image`
+- `POST /ewl/bal/v1/player/earn`
+- `GET /healthz`
 
-## 约定
+## 本地启动
 
-- 这是一个独立 Git 仓库。
-- 默认仅用于本地开发和联调。
-- 后续建议仅在本目录下维护 mock 逻辑与示例数据。
+```bash
+cd Mock_Gateway
+npm install
+cp .env.example .env
+npm run start
+```
 
+默认监听：`http://127.0.0.1:19090`
+
+## 与 Backend 集成
+
+在 Backend 启动环境中设置：
+
+```bash
+MOCK_GATEWAY_BASE_URL=http://127.0.0.1:19090
+BALLY_BASE_URL=${MOCK_GATEWAY_BASE_URL}
+EDIP_BASE_URL=${MOCK_GATEWAY_BASE_URL}
+BALLY_REDEEM_BASE_URL=${MOCK_GATEWAY_BASE_URL}
+BALLY_PROMOTION_BASE_URL=${MOCK_GATEWAY_BASE_URL}
+
+# 建议关闭旧的本地 member 直返 mock，改走网关
+BALLY_MEMBER_QUERY_LOCAL_MOCK_ENABLED=false
+```
+
+## 快速验证
+
+```bash
+curl -s http://127.0.0.1:19090/healthz
+
+curl -s -X POST http://127.0.0.1:19090/edip/v1/token/get \
+  -H 'Content-Type: application/json' \
+  -d '{"schema":{},"data":{"account":"a","password":"b","key":"k","secret":"s"}}'
+
+curl -s -X POST http://127.0.0.1:19090/ewl/bal/v1/cardpin/validate \
+  -H 'Content-Type: application/json' \
+  -d '{"schema":{},"data":{"accountNum":"810006843","pin":"1234"}}'
+```

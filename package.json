@@ -1,0 +1,17 @@
+{
+  "name": "ewallet-mock-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local mock gateway for eWallet external Bally/EDIP APIs",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
