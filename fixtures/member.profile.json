@@ -1,0 +1,44 @@
+{
+  "status": true,
+  "errorCode": "",
+  "message": "Mock member profile",
+  "data": {
+    "accountNum": "",
+    "playerId": "",
+    "isActive": true,
+    "isDeactive": false,
+    "isBanned": false,
+    "currentTier": "MOCK",
+    "eBonus": "0",
+    "clubState": 1,
+    "primaryHost": "MOCK HOST",
+    "primaryHostID": 1000001,
+    "secondaryHost": "MOCK SECOND HOST",
+    "secondaryHostID": 1000002,
+    "phoneList": [
+      {
+        "phoneNum": "12345678",
+        "phoneType": "Mobile1"
+      }
+    ],
+    "player": {
+      "title": "Mr",
+      "firstName": "MOCK",
+      "lastName": "MEMBER",
+      "middleName": "",
+      "nickName": "MOCK",
+      "image": ""
+    },
+    "attribute": {
+      "birthday": "1990-01-01",
+      "gender": "M",
+      "height": "",
+      "weight": "",
+      "smoker": false,
+      "languageCode": "en"
+    },
+    "addressList": [],
+    "identityList": [],
+    "emailList": []
+  }
+}

@@ -17,6 +17,7 @@
 - `POST /ewl/edip/v1/member/profile`
 - `POST /ewl/bal/v1/player/image`
 - `POST /ewl/bal/v1/player/earn`
+- `POST /api/v1/prize-redemptions/sync`
 - `GET /healthz`
 
 ## 已内置的 LDAP Mock（新增）
@@ -100,6 +101,10 @@ curl -s -X POST http://127.0.0.1:19090/ewl/bal/v1/prize/redeem \
   -H 'Content-Type: application/json' \
   -d '{"schema":{},"data":{"accountNum":"800048718","prizeCode":"MOCK"}}'
 
+curl -s -X POST http://127.0.0.1:19090/api/v1/prize-redemptions/sync \
+  -H 'Content-Type: application/json' \
+  -d '{"schema":{},"data":{"correlationId":"mock-correlation-id"}}'
+
 curl -s -X POST http://127.0.0.1:19090/ewl/bal/v1/point/void \
   -H 'Content-Type: application/json' \
   -d '{"schema":{},"data":{"transId":"mock-redeem-id"}}'
@@ -133,10 +138,30 @@ ldapsearch -x -H ldap://127.0.0.1:1389 \
 # 建议把默认组名设置成 Backend 角色表已有 code（如 `SG-APP-EWALLET-SUPER-ADMIN`），更容易看到非空 permissions
 ```
 
+## 页面数据模板（JSON）
+
+- `fixtures/token.get.json`：`/edip/v1/token/get` 成功响应模板
+- `fixtures/member.profile.json`：`/ewl/edip/v1/member/profile` 成功响应模板
+- `fixtures/promotions.capture.800048718.json`：`/ewl/bal/v1/promotion/all` 抓包模板
+
+说明：
+
+- 以上模板用于维护响应“静态骨架”
+- 动态字段仍由网关运行时覆盖（如 `accessToken`、`refreshToken`、`accountNum`、`playerId`、以及 LDAP 用户相关字段）
+
+## 代码结构（已拆分）
+
+- `src/server.js`：仅保留启动、路由装配、404 与 LDAP 启动
+- `src/ldap/createMockLdapService.js`：LDAP 相关逻辑独立维护
+- `src/context/createMockContext.js`：共享配置、fixture 加载、通用工具函数
+- `src/routes/**`：每个接口路径一个独立文件（便于新增与变更）
+
 ## 常用环境变量
 
 - `MOCK_PROMOTION_CAPTURE_FILE`：promotion 抓包文件路径（默认读取仓库内 `./fixtures/promotions.capture.800048718.json`）
 - `MOCK_PROMOTION_MAX_ITEMS`：promotion 返回上限（eligible/entitled 各自限制，默认 `30`）
+- `MOCK_TOKEN_GET_FIXTURE_FILE`：`/edip/v1/token/get` JSON 模板文件路径（默认 `./fixtures/token.get.json`）
+- `MOCK_MEMBER_PROFILE_FIXTURE_FILE`：`/ewl/edip/v1/member/profile` JSON 模板文件路径（默认 `./fixtures/member.profile.json`）
 - `MOCK_TEAM_HIERARCHY_STATUS`：`team/hierarchy` 的 `status`（默认 `true`）
 - `MOCK_TEAM_HIERARCHY_ERROR_CODE` / `MOCK_TEAM_HIERARCHY_MESSAGE`：`team/hierarchy` 错误模拟
 - `MOCK_TEAM_HIERARCHY_ROLE` / `MOCK_TEAM_HIERARCHY_DEPARTMENT` / `MOCK_TEAM_HIERARCHY_TAGS`：`team/hierarchy` 返回字段
@@ -147,6 +172,7 @@ ldapsearch -x -H ldap://127.0.0.1:1389 \
 - `MOCK_REDEEMED_PROMOTION_DETAIL_VOIDED`：默认记录是否标记已作废（默认 `false`）
 - `MOCK_PLAYERPROMOTION_REDEEM_ERROR_CODE` / `MOCK_PLAYERPROMOTION_REDEEM_ERROR_MSG` / `MOCK_PLAYERPROMOTION_REDEEM_RESULT`：`playerpromotion/redeem` 返回控制
 - `MOCK_REDEEMEDPROMOTION_VOID_ERROR_CODE` / `MOCK_REDEEMEDPROMOTION_VOID_ERROR_MSG` / `MOCK_REDEEMEDPROMOTION_VOID_RESULT`：`redeemedpromotion/void` 返回控制
+- `MOCK_PRIZE_REDEMPTIONS_SYNC_SUCCESS` / `MOCK_PRIZE_REDEMPTIONS_SYNC_MESSAGE`：`/api/v1/prize-redemptions/sync` 返回控制
 - `MOCK_LDAP_ENABLED`：是否启用 LDAP mock（默认 `true`）
 - `MOCK_LDAP_HOST`：LDAP 监听地址（默认 `0.0.0.0`）
 - `MOCK_LDAP_PORT`：LDAP 监听端口（默认 `1389`）
