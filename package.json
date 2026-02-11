@@ -9,9 +9,11 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch --watch-preserve-output --watch-path=src --watch-path=.env src/server.js"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "ldapjs": "^3.0.7"
   }
 }
