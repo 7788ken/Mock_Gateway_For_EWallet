@@ -1,6 +1,8 @@
 require('dotenv').config()
 
 const crypto = require('node:crypto')
+const fs = require('node:fs')
+const path = require('node:path')
 const express = require('express')
 const ldap = require('ldapjs')
 
@@ -16,6 +18,53 @@ const configuredFailPins = (process.env.MOCK_VALIDATE_FAIL_PINS || '0000')
   .map((value) => value.trim())
   .filter(Boolean)
 const failPins = new Set(configuredFailPins)
+const promotionMaxItemsRaw = Number(process.env.MOCK_PROMOTION_MAX_ITEMS || 30)
+const promotionMaxItems =
+  Number.isFinite(promotionMaxItemsRaw) && promotionMaxItemsRaw > 0
+    ? Math.floor(promotionMaxItemsRaw)
+    : 30
+const promotionCaptureFile =
+  process.env.MOCK_PROMOTION_CAPTURE_FILE ||
+  path.resolve(__dirname, '../fixtures/promotions.capture.800048718.json')
+const teamHierarchyStatus = (process.env.MOCK_TEAM_HIERARCHY_STATUS || 'true').toLowerCase() !== 'false'
+const teamHierarchyErrorCode = process.env.MOCK_TEAM_HIERARCHY_ERROR_CODE || ''
+const teamHierarchyMessage = process.env.MOCK_TEAM_HIERARCHY_MESSAGE || 'Mock team hierarchy'
+const teamHierarchyRole = process.env.MOCK_TEAM_HIERARCHY_ROLE || 'SUPPORT'
+const teamHierarchyDepartment = process.env.MOCK_TEAM_HIERARCHY_DEPARTMENT || 'IT'
+const teamHierarchyTags = (process.env.MOCK_TEAM_HIERARCHY_TAGS || 'MOCK')
+  .split(',')
+  .map((value) => value.trim())
+  .filter(Boolean)
+
+const prizeRedeemErrorCode = process.env.MOCK_PRIZE_REDEEM_ERROR_CODE || ''
+const prizeRedeemErrorMsg = process.env.MOCK_PRIZE_REDEEM_ERROR_MSG || ''
+const prizeRedeemValue = process.env.MOCK_PRIZE_REDEEM_VALUE || ''
+
+const pointVoidErrorCode = process.env.MOCK_POINT_VOID_ERROR_CODE || ''
+const pointVoidErrorMsg = process.env.MOCK_POINT_VOID_ERROR_MSG || ''
+const pointVoidResult = (process.env.MOCK_POINT_VOID_RESULT || 'true').toLowerCase() === 'true'
+
+const redeemedPromotionDetailErrorCode =
+  process.env.MOCK_REDEEMED_PROMOTION_DETAIL_ERROR_CODE || ''
+const redeemedPromotionDetailErrorMsg =
+  process.env.MOCK_REDEEMED_PROMOTION_DETAIL_ERROR_MSG || ''
+const redeemedPromotionDetailIncludeDefaultRecord =
+  (process.env.MOCK_REDEEMED_PROMOTION_DETAIL_INCLUDE_DEFAULT_RECORD || 'true').toLowerCase() !==
+  'false'
+const redeemedPromotionDetailVoided =
+  (process.env.MOCK_REDEEMED_PROMOTION_DETAIL_VOIDED || 'false').toLowerCase() === 'true'
+
+const playerPromotionRedeemErrorCode =
+  process.env.MOCK_PLAYERPROMOTION_REDEEM_ERROR_CODE || ''
+const playerPromotionRedeemErrorMsg =
+  process.env.MOCK_PLAYERPROMOTION_REDEEM_ERROR_MSG || ''
+const playerPromotionRedeemResult =
+  (process.env.MOCK_PLAYERPROMOTION_REDEEM_RESULT || 'true').toLowerCase() === 'true'
+
+const redeemedPromotionVoidErrorCode = process.env.MOCK_REDEEMEDPROMOTION_VOID_ERROR_CODE || ''
+const redeemedPromotionVoidErrorMsg = process.env.MOCK_REDEEMEDPROMOTION_VOID_ERROR_MSG || ''
+const redeemedPromotionVoidResult =
+  (process.env.MOCK_REDEEMEDPROMOTION_VOID_RESULT || 'true').toLowerCase() === 'true'
 
 const ldapEnabled = (process.env.MOCK_LDAP_ENABLED || 'true').toLowerCase() !== 'false'
 const ldapHost = process.env.MOCK_LDAP_HOST || '0.0.0.0'
@@ -44,6 +93,48 @@ const mockProfile = {
   gender: process.env.MOCK_MEMBER_GENDER || 'M',
   image: process.env.MOCK_MEMBER_IMAGE || '',
 }
+const fallbackEligiblePromotionList = [
+  {
+    awardUsedLimit: 0,
+    awardsCount: 0,
+    awardsEligible: 0,
+    awardsEntitled: 0,
+    awardsRedeemLimit: 999,
+    earnedPoints: 0,
+    isDirectOffer: false,
+    isEligible: true,
+    isEntitled: false,
+    isOptIn: false,
+    isOptedInByPlayer: false,
+    isRedeemCompleted: false,
+    maxOutcome: 2,
+    minOutcome: 2,
+    startDate: '2026-01-27T06:00',
+    endDate: '2026-04-30T06:00',
+    id: 71768004,
+    code: 'LP-EE-CNYGS26',
+    name: 'CNY Gift Set Earn & Get-2026',
+    ruleId: 71768024,
+    ruleName: 'CNYGS-188pts-Hennessy VSOP + LCH Dried Scallop',
+    ruleNameDesc: 'CNYGS-188pts-Hennessy VSOP + LCH Dried Scallop',
+    toEarn1Unit: 188,
+    isRedeemAll: false,
+    outcomeList: [
+      {
+        key: 71768069,
+        value: 'lp-ee-cnygs26-188pts-hennessyvsop-me',
+        isInventoryCheck: null,
+        qtyOnHand: null,
+      },
+      {
+        key: 71768070,
+        value: 'lp-ee-cnygs26-188pts-lchscallop-me',
+        isInventoryCheck: null,
+        qtyOnHand: null,
+      },
+    ],
+  },
+]
 
 const issuedRefreshTokens = new Set()
 
@@ -68,6 +159,146 @@ function tokenSuccessResponse() {
     period: tokenPeriodSeconds,
   }
 }
+
+function extractJsonPayload(rawText) {
+  const firstJsonCharIndex = rawText.indexOf('{')
+  if (firstJsonCharIndex < 0) {
+    return null
+  }
+
+  const jsonText = rawText.slice(firstJsonCharIndex).trim()
+  if (!jsonText) {
+    return null
+  }
+
+  return JSON.parse(jsonText)
+}
+
+function normalizeOutcomeList(outcomeList) {
+  if (!Array.isArray(outcomeList)) {
+    return []
+  }
+
+  return outcomeList.map((item) => ({
+    key: item?.key ?? null,
+    value: item?.value || '',
+    isInventoryCheck: item?.isInventoryCheck ?? null,
+    qtyOnHand: item?.qtyOnHand ?? null,
+  }))
+}
+
+function normalizePromotionList(promotionList) {
+  if (!Array.isArray(promotionList)) {
+    return []
+  }
+
+  return promotionList.map((item) => ({
+    awardUsedLimit: item?.awardUsedLimit ?? 0,
+    awardsCount: item?.awardsCount ?? 0,
+    awardsEligible: item?.awardsEligible ?? 0,
+    awardsEntitled: item?.awardsEntitled ?? 0,
+    awardsRedeemLimit: item?.awardsRedeemLimit ?? 0,
+    earnedPoints: item?.earnedPoints ?? 0,
+    isDirectOffer: item?.isDirectOffer ?? false,
+    isEligible: item?.isEligible ?? false,
+    isEntitled: item?.isEntitled ?? false,
+    isOptIn: item?.isOptIn ?? false,
+    isOptedInByPlayer: item?.isOptedInByPlayer ?? false,
+    isRedeemCompleted: item?.isRedeemCompleted ?? false,
+    maxOutcome: item?.maxOutcome ?? 0,
+    minOutcome: item?.minOutcome ?? 0,
+    startDate: item?.startDate || '',
+    endDate: item?.endDate || '',
+    id: item?.id ?? null,
+    code: item?.code || '',
+    name: item?.name || '',
+    ruleId: item?.ruleId ?? null,
+    ruleName: item?.ruleName || '',
+    ruleNameDesc: item?.ruleNameDesc || '',
+    toEarn1Unit: item?.toEarn1Unit ?? 0,
+    isRedeemAll: item?.isRedeemAll ?? false,
+    outcomeList: normalizeOutcomeList(item?.outcomeList),
+  }))
+}
+
+function buildMockRedeemedPromotionOutcome(requestBody) {
+  const now = new Date().toISOString()
+  const loginId = requestBody?.data?.loginId || 'mock.user'
+  const gamingDate = now.slice(0, 10)
+
+  return {
+    gamingDate,
+    normalPromo: true,
+    postedBy: loginId,
+    postedDtm: now,
+    casinoCode: requestBody?.data?.casinoCode || 'GLP',
+    locationCode: requestBody?.data?.locationCode || 'MOCK',
+    computerName: requestBody?.schema?.computerName || 'mock-gateway',
+    ipAddress: requestBody?.schema?.ipAddress || host,
+    prizeRuleCode: 'MOCK-PRIZE-RULE',
+    prizeRuleId: 100001,
+    promotionCode: 'MOCK-PROMOTION',
+    promotionId: 100002,
+    redeemedQty: 1,
+    redemptionId: 900001,
+    remark: 'Mock redeemed promotion detail',
+    outcome: {
+      redeemedList: [
+        {
+          outcomeRemark: 'MOCK-PRIZE-CODE',
+          outcomeType: 'PRIZE',
+          prizeCategory: 'PROMOTION',
+          transId: generateToken('mock_trans'),
+        },
+      ],
+    },
+    outcomeAward: null,
+    voidedBy: redeemedPromotionDetailVoided ? loginId : '',
+    voidedDtm: redeemedPromotionDetailVoided ? now : '',
+    voidedGamingDate: redeemedPromotionDetailVoided ? gamingDate : '',
+    voidedRemark: redeemedPromotionDetailVoided ? 'Mock voided redeemed promotion' : '',
+    displayOnlyPromo: false,
+    isVoided: redeemedPromotionDetailVoided,
+  }
+}
+
+function loadPromotionCapture(filePath) {
+  if (!filePath || !fs.existsSync(filePath)) {
+    return null
+  }
+
+  try {
+    const rawContent = fs.readFileSync(filePath, 'utf8')
+    const parsed = extractJsonPayload(rawContent)
+    if (!parsed) {
+      return null
+    }
+
+    const data = parsed?.data && typeof parsed.data === 'object' ? parsed.data : parsed
+    const eligiblePromotionList = normalizePromotionList(data?.eligiblePromotionList)
+    const entitledPromotionList = normalizePromotionList(data?.entitledPromotionList)
+
+    if (eligiblePromotionList.length === 0 && entitledPromotionList.length === 0) {
+      return null
+    }
+
+    console.log(`Loaded promotion fixture from ${filePath}`)
+    return {
+      eligiblePromotionList,
+      entitledPromotionList,
+    }
+  } catch (error) {
+    console.warn(`Failed to load promotion fixture from ${filePath}: ${error.message}`)
+    return null
+  }
+}
+
+function trimPromotionList(promotionList) {
+  return promotionList.slice(0, promotionMaxItems)
+}
+
+const promotionCapture = loadPromotionCapture(promotionCaptureFile)
+const normalizedFallbackEligiblePromotionList = normalizePromotionList(fallbackEligiblePromotionList)
 
 function normalizeDn(value) {
   const raw = `${value || ''}`.trim()
@@ -697,6 +928,65 @@ app.post('/ewl/bal/v1/cardpin/validate', (req, res) => {
   })
 })
 
+app.post('/ewl/mkt-rm/v1/team/hierarchy', (req, res) => {
+  const requestedUserName = `${req.body?.data?.userName || 'mock.user'}`.trim() || 'mock.user'
+  const requestedStaffId = `${req.body?.data?.staffId || 'M000001'}`.trim() || 'M000001'
+  const resolvedTags = teamHierarchyTags.length > 0 ? teamHierarchyTags : ['MOCK']
+  const teamMember = {
+    name: requestedUserName,
+    userName: requestedUserName,
+    mail: `${requestedUserName}@macausjm-glp.com`,
+    description: 'Mock team member',
+    staffId: requestedStaffId,
+    teamRole: teamHierarchyRole,
+    tags: resolvedTags,
+  }
+  const supportTeam = {
+    teamName: 'Mock Support Team',
+    description: 'Mock support team',
+    department: teamHierarchyDepartment,
+    hierarchy: [
+      {
+        name: 'Support',
+        priority: 1,
+        members: [teamMember],
+        tags: resolvedTags,
+      },
+    ],
+    supportTeams: [],
+  }
+
+  return res.status(200).json({
+    status: teamHierarchyStatus,
+    errorCode: teamHierarchyErrorCode,
+    message: teamHierarchyMessage,
+    data: {
+      userName: requestedUserName,
+      staffId: requestedStaffId,
+      name: requestedUserName,
+      mail: `${requestedUserName}@macausjm-glp.com`,
+      teamRole: teamHierarchyRole,
+      tags: resolvedTags,
+      teams: [
+        {
+          teamName: 'Mock Team',
+          description: 'Mock team hierarchy',
+          department: teamHierarchyDepartment,
+          hierarchy: [
+            {
+              name: 'Main Team',
+              priority: 1,
+              members: [teamMember],
+              tags: resolvedTags,
+            },
+          ],
+          supportTeams: [supportTeam],
+        },
+      ],
+    },
+  })
+})
+
 app.post('/ewl/edip/v1/member/profile', (req, res) => {
   const accountNum = resolveAccountNum(req.body)
 
@@ -755,6 +1045,35 @@ app.post('/ewl/edip/v1/member/profile', (req, res) => {
   })
 })
 
+app.post('/ewl/bal/v1/promotion/all', (req, res) => {
+  const accountNum = resolveAccountNum(req.body)
+
+  if (!accountNum) {
+    return res.status(200).json({
+      errorCode: 'MISSING_ACCOUNT_NUM',
+      errorMsg: 'accountNum or playerId is required',
+      accountNum: '',
+      eligiblePromotionList: [],
+      entitledPromotionList: [],
+    })
+  }
+
+  const eligiblePromotionList =
+    promotionCapture?.eligiblePromotionList?.length > 0
+      ? promotionCapture.eligiblePromotionList
+      : normalizedFallbackEligiblePromotionList
+  const entitledPromotionList =
+    promotionCapture?.entitledPromotionList?.length > 0 ? promotionCapture.entitledPromotionList : []
+
+  return res.status(200).json({
+    errorCode: '',
+    errorMsg: '',
+    accountNum,
+    eligiblePromotionList: trimPromotionList(eligiblePromotionList),
+    entitledPromotionList: trimPromotionList(entitledPromotionList),
+  })
+})
+
 app.post('/ewl/bal/v1/player/image', (req, res) => {
   const accountNum = resolveAccountNum(req.body)
   return res.status(200).json({
@@ -786,6 +1105,55 @@ app.post('/ewl/bal/v1/player/earn', (req, res) => {
       },
     ],
     ratingSum: [],
+  })
+})
+
+app.post('/ewl/bal/v1/prize/redeem', (req, res) => {
+  return res.status(200).json({
+    errorCode: prizeRedeemErrorCode,
+    errorMsg: prizeRedeemErrorMsg,
+    redeemPrize: prizeRedeemValue || generateToken('mock_redeem_prize'),
+  })
+})
+
+app.post('/ewl/bal/v1/point/void', (req, res) => {
+  return res.status(200).json({
+    errorCode: pointVoidErrorCode,
+    errorMsg: pointVoidErrorMsg,
+    result: pointVoidResult,
+  })
+})
+
+app.post('/ewl/bal/v1/redeemedpromotion/detail', (req, res) => {
+  const accountNum = resolveAccountNum(req.body)
+  const outcomeList = redeemedPromotionDetailIncludeDefaultRecord
+    ? [buildMockRedeemedPromotionOutcome(req.body)]
+    : []
+
+  return res.status(200).json({
+    errorCode: redeemedPromotionDetailErrorCode,
+    errorMsg: redeemedPromotionDetailErrorMsg,
+    accountNum,
+    outcomeList,
+  })
+})
+
+app.post('/ewl/bal/v1/playerpromotion/redeem', (req, res) => {
+  const accountNum = resolveAccountNum(req.body)
+
+  return res.status(200).json({
+    errorCode: playerPromotionRedeemErrorCode,
+    errorMsg: playerPromotionRedeemErrorMsg,
+    accountNum,
+    result: playerPromotionRedeemResult,
+  })
+})
+
+app.post('/ewl/bal/v1/redeemedpromotion/void', (req, res) => {
+  return res.status(200).json({
+    errorCode: redeemedPromotionVoidErrorCode,
+    errorMsg: redeemedPromotionVoidErrorMsg,
+    result: redeemedPromotionVoidResult,
   })
 })
 

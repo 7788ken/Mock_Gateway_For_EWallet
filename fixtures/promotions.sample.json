@@ -1,0 +1,402 @@
+{
+  "success": true,
+  "message": "Get all promotions successfully.",
+  "data": {
+    "customerId": "800048718",
+    "eligiblePromotionList": [
+     {
+        "awardUsedLimit": 0,
+        "awardsCount": 0,
+        "awardsEligible": 0,
+        "awardsEntitled": 0,
+        "awardsRedeemLimit": 999,
+        "earnedPoints": 0,
+        "isDirectOffer": false,
+        "isEligible": true,
+        "isEntitled": false,
+        "isOptIn": false,
+        "isOptedInByPlayer": false,
+        "isRedeemCompleted": false,
+        "maxOutcome": 2,
+        "minOutcome": 2,
+        "startDate": "2026-01-27T06:00",
+        "endDate": "2026-04-30T06:00",
+        "id": 71768004,
+        "code": "LP-EE-CNYGS26",
+        "name": "CNY Gift Set Earn & Get-2026",
+        "ruleId": 71768024,
+        "ruleName": "CNYGS-188pts-Hennessy VSOP + LCH Dried Scallop",
+        "ruleNameDesc": "CNYGS-188pts-Hennessy VSOP + LCH Dried Scallop",
+        "toEarn1Unit": 188,
+        "isRedeemAll": false,
+        "outcomeList": [
+          {
+            "key": 71768069,
+            "value": "lp-ee-cnygs26-188pts-hennessyvsop-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768070,
+            "value": "lp-ee-cnygs26-188pts-lchscallop-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          }
+        ]
+      },
+      {
+        "awardUsedLimit": 0,
+        "awardsCount": 0,
+        "awardsEligible": 0,
+        "awardsEntitled": 0,
+        "awardsRedeemLimit": 999,
+        "earnedPoints": 0,
+        "isDirectOffer": false,
+        "isEligible": true,
+        "isEntitled": false,
+        "isOptIn": false,
+        "isOptedInByPlayer": false,
+        "isRedeemCompleted": false,
+        "maxOutcome": 1,
+        "minOutcome": 1,
+        "startDate": "2026-01-27T06:00",
+        "endDate": "2026-04-30T06:00",
+        "id": 71768004,
+        "code": "LP-EE-CNYGS26",
+        "name": "CNY Gift Set Earn & Get-2026",
+        "ruleId": 71768025,
+        "ruleName": "CNYGS-188pts-LCH Gift Set LCH-Fish Maw & Scallop",
+        "ruleNameDesc": "CNYGS-188pts-LCH Gift Set LCH-Fish Maw & Scallop",
+        "toEarn1Unit": 188,
+        "isRedeemAll": false,
+        "outcomeList": [
+          {
+            "key": 71768071,
+            "value": "lp-ee-cnygs26-188pts-lchgiftset-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          }
+        ]
+      },
+      {
+        "awardUsedLimit": 0,
+        "awardsCount": 0,
+        "awardsEligible": 0,
+        "awardsEntitled": 0,
+        "awardsRedeemLimit": 999,
+        "earnedPoints": 0,
+        "isDirectOffer": false,
+        "isEligible": true,
+        "isEntitled": false,
+        "isOptIn": false,
+        "isOptedInByPlayer": false,
+        "isRedeemCompleted": false,
+        "maxOutcome": 2,
+        "minOutcome": 2,
+        "startDate": "2026-01-27T06:00",
+        "endDate": "2026-04-30T06:00",
+        "id": 71768004,
+        "code": "LP-EE-CNYGS26",
+        "name": "CNY Gift Set Earn & Get-2026",
+        "ruleId": 71768026,
+        "ruleName": "CNYGS-188pts-Martell + LCH-Can Abalone",
+        "ruleNameDesc": "CNYGS-188pts-Martell + LCH-Can Abalone",
+        "toEarn1Unit": 188,
+        "isRedeemAll": false,
+        "outcomeList": [
+          {
+            "key": 71768072,
+            "value": "lp-ee-cnygs26-188pts-martellnoblige-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768073,
+            "value": "lp-ee-cnygs26-188pts-lchabalone-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          }
+        ]
+      },
+      {
+        "awardUsedLimit": 0,
+        "awardsCount": 0,
+        "awardsEligible": 0,
+        "awardsEntitled": 0,
+        "awardsRedeemLimit": 999,
+        "earnedPoints": 0,
+        "isDirectOffer": false,
+        "isEligible": true,
+        "isEntitled": false,
+        "isOptIn": false,
+        "isOptedInByPlayer": false,
+        "isRedeemCompleted": false,
+        "maxOutcome": 1,
+        "minOutcome": 1,
+        "startDate": "2026-01-27T06:00",
+        "endDate": "2026-04-30T06:00",
+        "id": 71768004,
+        "code": "LP-EE-CNYGS26",
+        "name": "CNY Gift Set Earn & Get-2026",
+        "ruleId": 71768027,
+        "ruleName": "CNYGS-388pts-LCH-Gift Set Fish Maw + Scallop",
+        "ruleNameDesc": "CNYGS-388pts-LCH-Gift Set Fish Maw + Scallop",
+        "toEarn1Unit": 388,
+        "isRedeemAll": false,
+        "outcomeList": [
+          {
+            "key": 71768074,
+            "value": "lp-ee-cnygs26-388pts-lchdriedseafood-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          }
+        ]
+      },
+      {
+        "awardUsedLimit": 0,
+        "awardsCount": 0,
+        "awardsEligible": 0,
+        "awardsEntitled": 0,
+        "awardsRedeemLimit": 999,
+        "earnedPoints": 0,
+        "isDirectOffer": false,
+        "isEligible": true,
+        "isEntitled": false,
+        "isOptIn": false,
+        "isOptedInByPlayer": false,
+        "isRedeemCompleted": false,
+        "maxOutcome": 2,
+        "minOutcome": 2,
+        "startDate": "2026-01-27T06:00",
+        "endDate": "2026-04-30T06:00",
+        "id": 71768004,
+        "code": "LP-EE-CNYGS26",
+        "name": "CNY Gift Set Earn & Get-2026",
+        "ruleId": 71768028,
+        "ruleName": "CNYGS-388pts-Martell + LCH Abalone",
+        "ruleNameDesc": "CNYGS-388pts-Martell + LCH Abalone",
+        "toEarn1Unit": 388,
+        "isRedeemAll": false,
+        "outcomeList": [
+          {
+            "key": 71768075,
+            "value": "lp-ee-cnygs26-388pts-martellcny-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768076,
+            "value": "lp-ee-cnygs26-388pts-lchabalone-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          }
+        ]
+      },
+      {
+        "awardUsedLimit": 0,
+        "awardsCount": 0,
+        "awardsEligible": 0,
+        "awardsEntitled": 0,
+        "awardsRedeemLimit": 999,
+        "earnedPoints": 0,
+        "isDirectOffer": false,
+        "isEligible": true,
+        "isEntitled": false,
+        "isOptIn": false,
+        "isOptedInByPlayer": false,
+        "isRedeemCompleted": false,
+        "maxOutcome": 2,
+        "minOutcome": 2,
+        "startDate": "2026-01-27T06:00",
+        "endDate": "2026-04-30T06:00",
+        "id": 71768004,
+        "code": "LP-EE-CNYGS26",
+        "name": "CNY Gift Set Earn & Get-2026",
+        "ruleId": 71768029,
+        "ruleName": "CNYGS-388pts-Moutai 200ML + $1,000 NP/EB",
+        "ruleNameDesc": "CNYGS-388pts-Moutai 200ML + $1,000 NP/EB",
+        "toEarn1Unit": 388,
+        "isRedeemAll": false,
+        "outcomeList": [
+          {
+            "key": 71768077,
+            "value": "lp-ee-cnygs26-388pts-moutai200ml-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768078,
+            "value": "lp-ee-cnygs26-388pts-1000-pc",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768079,
+            "value": "lp-ee-cnygs26-388pts-1000-eb",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          }
+        ]
+      },
+      {
+        "awardUsedLimit": 0,
+        "awardsCount": 0,
+        "awardsEligible": 0,
+        "awardsEntitled": 0,
+        "awardsRedeemLimit": 688,
+        "earnedPoints": 0,
+        "isDirectOffer": false,
+        "isEligible": true,
+        "isEntitled": false,
+        "isOptIn": false,
+        "isOptedInByPlayer": false,
+        "isRedeemCompleted": false,
+        "maxOutcome": 2,
+        "minOutcome": 2,
+        "startDate": "2026-01-27T06:00",
+        "endDate": "2026-04-30T06:00",
+        "id": 71768004,
+        "code": "LP-EE-CNYGS26",
+        "name": "CNY Gift Set Earn & Get-2026",
+        "ruleId": 71768030,
+        "ruleName": "CNYGS-688pts-Hennessy XO  + $2,200 NP/EB",
+        "ruleNameDesc": "CNYGS-688pts-Hennessy XO  + $2,200 NP/EB",
+        "toEarn1Unit": 388,
+        "isRedeemAll": false,
+        "outcomeList": [
+          {
+            "key": 71768080,
+            "value": "lp-ee-cnygs26-688pts-hennessyxocny-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768081,
+            "value": "lp-ee-cnygs26-688pts-2200-pc",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768082,
+            "value": "lp-ee-cnygs26-688pts-2200-eb",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          }
+        ]
+      },
+      {
+        "awardUsedLimit": 0,
+        "awardsCount": 0,
+        "awardsEligible": 0,
+        "awardsEntitled": 0,
+        "awardsRedeemLimit": 688,
+        "earnedPoints": 0,
+        "isDirectOffer": false,
+        "isEligible": true,
+        "isEntitled": false,
+        "isOptIn": false,
+        "isOptedInByPlayer": false,
+        "isRedeemCompleted": false,
+        "maxOutcome": 2,
+        "minOutcome": 2,
+        "startDate": "2026-01-27T06:00",
+        "endDate": "2026-04-30T06:00",
+        "id": 71768004,
+        "code": "LP-EE-CNYGS26",
+        "name": "CNY Gift Set Earn & Get-2026",
+        "ruleId": 71768031,
+        "ruleName": "CNYGS-688pts-Moutai 500 ML + LCH Gift Set +Abalone",
+        "ruleNameDesc": "CNYGS-688pts-Moutai 500 ML + LCH Gift Set +Abalone",
+        "toEarn1Unit": 388,
+        "isRedeemAll": false,
+        "outcomeList": [
+          {
+            "key": 71768083,
+            "value": "lp-ee-cnygs26-688pts-moutai500ml-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768084,
+            "value": "lp-ee-cnygs26-688pts-lchmushroom-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768085,
+            "value": "lp-ee-cnygs26-688pts-lchabalone-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          }
+        ]
+      },
+      {
+        "awardUsedLimit": 0,
+        "awardsCount": 0,
+        "awardsEligible": 0,
+        "awardsEntitled": 0,
+        "awardsRedeemLimit": 688,
+        "earnedPoints": 0,
+        "isDirectOffer": false,
+        "isEligible": true,
+        "isEntitled": false,
+        "isOptIn": false,
+        "isOptedInByPlayer": false,
+        "isRedeemCompleted": false,
+        "maxOutcome": 2,
+        "minOutcome": 2,
+        "startDate": "2026-01-27T06:00",
+        "endDate": "2026-04-30T06:00",
+        "id": 71768004,
+        "code": "LP-EE-CNYGS26",
+        "name": "CNY Gift Set Earn & Get-2026",
+        "ruleId": 71768032,
+        "ruleName": "CNYGS-688pts-Whisky Live + $2,000 NP/EB",
+        "ruleNameDesc": "CNYGS-688pts-Whisky Live + $2,000 NP/EB",
+        "toEarn1Unit": 388,
+        "isRedeemAll": false,
+        "outcomeList": [
+          {
+            "key": 71768086,
+            "value": "lp-ee-cnygs26-688pts-whiskylive-me",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768087,
+            "value": "lp-ee-cnygs26-688pts-2000-pc",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          },
+          {
+            "key": 71768088,
+            "value": "lp-ee-cnygs26-688pts-2000-eb",
+            "isInventoryCheck": null,
+            "qtyOnHand": null,
+            "prize": null
+          }
+        ]
+      }
+    ],
+    "entitledPromotionList": []
+  }
+}

@@ -7,6 +7,13 @@
 - `POST /edip/v1/token/get`
 - `POST /edip/v1/token/refresh`
 - `POST /ewl/bal/v1/cardpin/validate`
+- `POST /ewl/bal/v1/promotion/all`
+- `POST /ewl/mkt-rm/v1/team/hierarchy`
+- `POST /ewl/bal/v1/prize/redeem`
+- `POST /ewl/bal/v1/point/void`
+- `POST /ewl/bal/v1/redeemedpromotion/detail`
+- `POST /ewl/bal/v1/playerpromotion/redeem`
+- `POST /ewl/bal/v1/redeemedpromotion/void`
 - `POST /ewl/edip/v1/member/profile`
 - `POST /ewl/bal/v1/player/image`
 - `POST /ewl/bal/v1/player/earn`
@@ -81,6 +88,34 @@ curl -s -X POST http://127.0.0.1:19090/ewl/bal/v1/cardpin/validate \
   -H 'Content-Type: application/json' \
   -d '{"schema":{},"data":{"accountNum":"810006843","pin":"1234"}}'
 
+curl -s -X POST http://127.0.0.1:19090/ewl/bal/v1/promotion/all \
+  -H 'Content-Type: application/json' \
+  -d '{"schema":{},"data":{"accountNum":"800048718"}}'
+
+curl -s -X POST http://127.0.0.1:19090/ewl/mkt-rm/v1/team/hierarchy \
+  -H 'Content-Type: application/json' \
+  -d '{"schema":{"terminalCode":"MOCK-PC"},"data":{"userName":"mock.user","staffId":"M000001"}}'
+
+curl -s -X POST http://127.0.0.1:19090/ewl/bal/v1/prize/redeem \
+  -H 'Content-Type: application/json' \
+  -d '{"schema":{},"data":{"accountNum":"800048718","prizeCode":"MOCK"}}'
+
+curl -s -X POST http://127.0.0.1:19090/ewl/bal/v1/point/void \
+  -H 'Content-Type: application/json' \
+  -d '{"schema":{},"data":{"transId":"mock-redeem-id"}}'
+
+curl -s -X POST http://127.0.0.1:19090/ewl/bal/v1/redeemedpromotion/detail \
+  -H 'Content-Type: application/json' \
+  -d '{"schema":{},"data":{"accountNum":"800048718"}}'
+
+curl -s -X POST http://127.0.0.1:19090/ewl/bal/v1/playerpromotion/redeem \
+  -H 'Content-Type: application/json' \
+  -d '{"schema":{},"data":{"accountNum":"800048718","promotionId":100002}}'
+
+curl -s -X POST http://127.0.0.1:19090/ewl/bal/v1/redeemedpromotion/void \
+  -H 'Content-Type: application/json' \
+  -d '{"schema":{},"data":{"redeemedId":900001}}'
+
 # LDAP manager bind（默认 manager 密码可留空，便于 Backend 只改 LDAP_URL）
 ldapsearch -x -H ldap://127.0.0.1:1389 \
   -D "cn=s-cicd-app,OU=ServiceAccount,dc=macausjm-glp,dc=com" \
@@ -98,8 +133,20 @@ ldapsearch -x -H ldap://127.0.0.1:1389 \
 # 建议把默认组名设置成 Backend 角色表已有 code（如 `SG-APP-EWALLET-SUPER-ADMIN`），更容易看到非空 permissions
 ```
 
-## LDAP 相关环境变量
+## 常用环境变量
 
+- `MOCK_PROMOTION_CAPTURE_FILE`：promotion 抓包文件路径（默认读取仓库内 `./fixtures/promotions.capture.800048718.json`）
+- `MOCK_PROMOTION_MAX_ITEMS`：promotion 返回上限（eligible/entitled 各自限制，默认 `30`）
+- `MOCK_TEAM_HIERARCHY_STATUS`：`team/hierarchy` 的 `status`（默认 `true`）
+- `MOCK_TEAM_HIERARCHY_ERROR_CODE` / `MOCK_TEAM_HIERARCHY_MESSAGE`：`team/hierarchy` 错误模拟
+- `MOCK_TEAM_HIERARCHY_ROLE` / `MOCK_TEAM_HIERARCHY_DEPARTMENT` / `MOCK_TEAM_HIERARCHY_TAGS`：`team/hierarchy` 返回字段
+- `MOCK_PRIZE_REDEEM_ERROR_CODE` / `MOCK_PRIZE_REDEEM_ERROR_MSG` / `MOCK_PRIZE_REDEEM_VALUE`：`prize/redeem` 返回控制（`MOCK_PRIZE_REDEEM_VALUE` 留空时自动生成交易号）
+- `MOCK_POINT_VOID_ERROR_CODE` / `MOCK_POINT_VOID_ERROR_MSG` / `MOCK_POINT_VOID_RESULT`：`point/void` 返回控制
+- `MOCK_REDEEMED_PROMOTION_DETAIL_ERROR_CODE` / `MOCK_REDEEMED_PROMOTION_DETAIL_ERROR_MSG`：`redeemedpromotion/detail` 返回控制
+- `MOCK_REDEEMED_PROMOTION_DETAIL_INCLUDE_DEFAULT_RECORD`：是否返回默认一条 `outcomeList`（默认 `true`）
+- `MOCK_REDEEMED_PROMOTION_DETAIL_VOIDED`：默认记录是否标记已作废（默认 `false`）
+- `MOCK_PLAYERPROMOTION_REDEEM_ERROR_CODE` / `MOCK_PLAYERPROMOTION_REDEEM_ERROR_MSG` / `MOCK_PLAYERPROMOTION_REDEEM_RESULT`：`playerpromotion/redeem` 返回控制
+- `MOCK_REDEEMEDPROMOTION_VOID_ERROR_CODE` / `MOCK_REDEEMEDPROMOTION_VOID_ERROR_MSG` / `MOCK_REDEEMEDPROMOTION_VOID_RESULT`：`redeemedpromotion/void` 返回控制
 - `MOCK_LDAP_ENABLED`：是否启用 LDAP mock（默认 `true`）
 - `MOCK_LDAP_HOST`：LDAP 监听地址（默认 `0.0.0.0`）
 - `MOCK_LDAP_PORT`：LDAP 监听端口（默认 `1389`）
